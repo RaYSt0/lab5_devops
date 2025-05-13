@@ -1,20 +1,21 @@
 steps:
 - uses: actions/checkout@v4
-  
+
 - name: Set up Python 3.12
   uses: actions/setup-python@v5
   with:
     python-version: "3.12"
-    
-- name: Install dependencies
+
+- name: Install dependencies with force-reinstall
   run: |
     python -m pip install --upgrade pip
-    pip install -r requirements.txt
-    
-- name: Verify imports
+    pip install --force-reinstall -r requirements.txt
+    pip list  # Для отладки
+
+- name: Verify pydantic-settings installation
   run: |
-    python -c "from src.main import app; print('App imported successfully')"
-    
+    python -c "import pydantic_settings; print(f'pydantic_settings version: {pydantic_settings.__version__}')"
+
 - name: Run tests with coverage
   run: |
-    python -m pytest tests/ --cov=src --cov-report=xml
+    python -m pytest tests/ --cov=src --cov-report=xml -v
